@@ -21,4 +21,4 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           context: ./project/techtrends
-          tags: techtrends:latest
+          tags: baonq0412/techtrends:latest
