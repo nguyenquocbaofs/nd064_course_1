@@ -71,7 +71,7 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        app.logger.debug(
+        app.logger.error(
             'A non-existing article is accessed and a 404 page is returned.')
         return render_template('404.html'), 404
     else:
@@ -142,13 +142,23 @@ def create():
     return render_template('create.html')
 
 
+class InfoFilter(logging.Filter):
+    def filter(self, rec):
+        return rec.levelno in (logging.DEBUG, logging.INFO)
+
+
 # start the application on port 3111
 if __name__ == "__main__":
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+
+    stderr_handler = logging.StreamHandler(sys.stderr)
+    stderr_handler.setLevel(logging.ERROR)
+
     logging.basicConfig(
         format='%(levelname)s:%(name)s:%(asctime)s, %(message)s',
-        level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S',
-        handlers=[logging.StreamHandler(sys.stdout)]
+        handlers=[stdout_handler, stderr_handler]
     )
 
     app.run(host='0.0.0.0', port='3111')
